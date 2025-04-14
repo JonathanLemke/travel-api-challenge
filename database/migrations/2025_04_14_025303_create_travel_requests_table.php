@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('destination');
             $table->date('departure_date');
             $table->date('return_date');
-            $table->enum('status', ['requested', 'approved', 'rejected'])->default('requested');
-            $table->timestamp(`approved_at`)->nullable();
+            $table->enum('status', ['requested', 'approved', 'canceled'])->default('requested');
+            $table->timestamp('approved_at')->nullable();
             $table->timestamp("canceled_at")->nullable();
             $table->timestamps();
         });
