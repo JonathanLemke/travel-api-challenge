@@ -21,3 +21,23 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+
+# Algumas configurações estras para manter o repositório limpo
+
+# Docker persistent data (ex: database files)
+/docker/db/dbdata/
+
+# Ignore log files and framework generated files
+/storage/logs/*.log
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+
+# But keep the directories using .gitkeep (if you use them)
+!/storage/logs/.gitkeep
+!/storage/framework/cache/.gitkeep
+!/storage/framework/sessions/.gitkeep
+!/storage/framework/testing/.gitkeep
+!/storage/framework/views/.gitkeep
