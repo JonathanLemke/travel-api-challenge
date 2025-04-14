@@ -70,7 +70,7 @@ class User extends Authenticatable implements JWTSubject
         return [];  
     }
 
-     /**
+    /**
      * Check if the user has the admin role.
      *
      * @return bool
@@ -78,6 +78,14 @@ class User extends Authenticatable implements JWTSubject
     public function isAdmin()
     {
         return $this->role === 'admin';
+    }
+
+    /**
+     * Get the travel requests associated with the user.
+     */
+    public function travelRequests()
+    {
+        return $this->hasMany(TravelRequest::class);
     }
 
 }
