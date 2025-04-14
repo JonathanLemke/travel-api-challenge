@@ -1,5 +1,5 @@
 
-# FINAL API de Gerenciamento de Viagens Corporativas
+# API de Gerenciamento de Viagens Corporativas
 
 API REST para gerenciamento de pedidos de viagem corporativa desenvolvida com Laravel 11+ e Docker.
 
