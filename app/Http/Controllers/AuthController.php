@@ -11,18 +11,7 @@ use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
-    /**
-     * Create a new AuthController instance.
-     * Aplica o middleware jwt.verify a todas as rotas deste controller,
-     * exceto 'login' e 'register'.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('jwt.verify', ['except' => ['login', 'register']]);
-    }
-
+    
     /**
      * Registra um novo usuário.
      */

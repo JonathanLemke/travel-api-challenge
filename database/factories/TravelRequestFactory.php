@@ -70,7 +70,7 @@ class TravelRequestFactory extends Factory
          $isApprovedOriginally = $this->faker->boolean();
         return $this->state(fn (array $attributes) => [
             'status' => 'canceled',
-            // Se foi aprovado antes, mantém a data de aprovação (opcional)
+            // Se foi aprovado antes, mantém a data de aprovação 
             'approved_at' => $isApprovedOriginally ? ($attributes['approved_at'] ?? $this->faker->dateTimeThisMonth()) : null,
             'canceled_at' => now(), // Define a data de cancelamento
         ]);

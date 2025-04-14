@@ -20,16 +20,6 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class TravelRequestController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     * Aplica o middleware jwt.verify a todas as ações neste controller.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('jwt.verify');
-    }
 
      /**
      * Listar todos os pedidos de viagem com filtros opcionais.
@@ -50,7 +40,7 @@ class TravelRequestController extends Controller
         $validatedFilters = $request->validated();
 
         if (isset($validatedFilters['status'])) {
-            $query->byStatus($validatedFilters['status']);
+            $query->status($validatedFilters['status']);
         }
 
         if (isset($validatedFilters['start_date']) && isset($validatedFilters['end_date'])) {
