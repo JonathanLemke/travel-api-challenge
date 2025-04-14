@@ -1,0 +1,49 @@
+version: '3'
+services:
+  app:
+    build:
+      context: ./docker/app
+      dockerfile: Dockerfile
+    container_name: travel-api
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - travel-network
+    depends_on:
+      - db
+      
+  nginx:
+    image: nginx:alpine
+    container_name: travel-api-nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - travel-network
+    depends_on:
+      - app
+      
+  db:
+    image: mysql:8.0
+    container_name: travel-api-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker/db/dbdata:/var/lib/mysql
+    networks:
+      - travel-network
+
+networks:
+  travel-network:
+    driver: bridge
