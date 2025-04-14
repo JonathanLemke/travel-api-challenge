@@ -1,66 +1,158 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# FINAL API de Gerenciamento de Viagens Corporativas
 
-## About Laravel
+API REST para gerenciamento de pedidos de viagem corporativa desenvolvida com Laravel 11+ e Docker.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Tecnologias Utilizadas
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+-   PHP 8.2+
+-   Laravel 11+
+-   MySQL 8.0
+-   Docker & Docker Compose
+-   Tymon JWT-Auth para autenticação
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Pré-requisitos
 
-## Learning Laravel
+-   Git
+-   Docker ([https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/))
+-   Docker Compose (geralmente incluído com Docker Desktop ou instalável separadamente no Linux: [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/))
+-   Opcional: VS Code com a extensão [Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) para uma melhor experiência de desenvolvimento.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Configuração e Execução Rápida com Docker
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Estas instruções assumem que você tem Docker e Docker Compose instalados e funcionando.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1.  **Clone o Repositório:**
+    ```bash
+    git clone git@github.com:JonathanLemke/travel-api-challenge.git travel-api
+    cd travel-api
+    ```
 
-## Laravel Sponsors
+2.  **Arquivo de Ambiente (`.env`):**
+    *   **Caso este repositório inclua um arquivo `.env`:** Este passo pode ser pulado, pois o arquivo `.env` necessário para o ambiente Docker já está presente (foi incluído especificamente para facilitar a configuração deste desafio).
+    *   **Caso `.env` não exista:** Copie o arquivo de exemplo:
+        ```bash
+        cp .env.example .env
+        ```
+        *   Neste caso, você **precisará** gerar as chaves após iniciar os containers (veja passos posteriores).
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+3.  **Construa e Inicie os Containers Docker:**
+    Este comando irá construir a imagem da aplicação (se necessário) e iniciar todos os serviços (`app`, `nginx`, `db`) em background.
+    ```bash
+    docker-compose up -d --build
+    ```
 
-### Premium Partners
+4.  **Instale as Dependências do Composer:**
+    Execute o Composer *dentro* do container `app` para instalar as bibliotecas PHP necessárias.
+    ```bash
+    docker-compose exec app composer install --no-interaction --optimize-autoloader
+    ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+5.  **Gere as Chaves (SE `.env` NÃO FOI COMITADO/COPIADO no Passo 2):**
+    *   Se você copiou do `.env.example` no passo 2, execute os seguintes comandos para gerar as chaves de aplicação e JWT:
+        ```bash
+        docker-compose exec app php artisan key:generate
+        docker-compose exec app php artisan jwt:secret
+        ```
 
-## Contributing
+6.  **Execute as Migrations do Banco de Dados:**
+    Cria a estrutura das tabelas no banco de dados MySQL dentro do container `db`.
+    ```bash
+    docker-compose exec app php artisan migrate
+    ```
+    *(Para popular o banco com dados de exemplo, você precisaria criar Seeders e rodar `php artisan migrate --seed`).*
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+7.  **Pronto!** A API deve estar acessível na sua máquina local:
+    *   **URL Base:** `http://localhost:8000`
+    *   **Prefixo da API:** `/api` (Ex: `http://localhost:8000/api/login`)
 
-## Code of Conduct
+## Executando os Testes
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Para rodar a suíte completa de testes automatizados (PHPUnit) e verificar a integridade da aplicação:
 
-## Security Vulnerabilities
+```bash
+docker-compose exec app php artisan test
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Endpoints da API
 
-## License
+### Endpoints de Autenticação
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+-   **`POST /api/register`**
+    -   Descrição: Registra um novo usuário (com role 'user' por padrão).
+    -   Body (JSON): `{ "name": "Seu Nome", "email": "email@exemplo.com", "password": "sua_senha_min_6" }`
+    -   Resposta: Token JWT e dados do usuário.
+-   **`POST /api/login`**
+    -   Descrição: Autentica um usuário existente.
+    -   Body (JSON): `{ "email": "email@exemplo.com", "password": "sua_senha" }`
+    -   Resposta: Token JWT e dados do usuário (em caso de sucesso), erro 401 (em caso de falha).
+-   **`POST /api/logout`**
+    -   Descrição: Invalida o token JWT atual do usuário.
+    -   Autenticação: Requer `Authorization: Bearer <token>` no header.
+    -   Resposta: Mensagem de sucesso.
+-   **`POST /api/refresh`**
+    -   Descrição: Gera um novo token JWT, invalidando o antigo. Útil para manter a sessão ativa.
+    -   Autenticação: Requer `Authorization: Bearer <token>` no header (pode ser um token expirado, mas não inválido).
+    -   Resposta: Novo Token JWT e dados do usuário.
+-   **`GET /api/me`**
+    -   Descrição: Retorna os dados do usuário autenticado atualmente.
+    -   Autenticação: Requer `Authorization: Bearer <token>` no header.
+    -   Resposta: Dados do usuário autenticado.
+
+### Endpoints de Pedidos de Viagem (Requerem Token JWT)
+
+-   **`GET /api/travel-requests`**
+    -   Descrição: Lista os pedidos de viagem. Usuários 'user' veem apenas os seus, 'admin' veem todos.
+    -   Autenticação: Requer `Authorization: Bearer <token>`.
+    -   Query Params (Opcionais para Filtros):
+        -   `status=requested` ou `approved` ou `canceled`
+        -   `start_date=YYYY-MM-DD`
+        -   `end_date=YYYY-MM-DD`
+        -   `destination=TextoParcial`
+    -   Resposta: Coleção de pedidos de viagem formatados.
+-   **`POST /api/travel-requests`**
+    -   Descrição: Cria um novo pedido de viagem para o usuário autenticado (status inicial 'requested').
+    -   Autenticação: Requer `Authorization: Bearer <token>`.
+    -   Body (JSON): `{ "destination": "Nome do Destino", "departure_date": "YYYY-MM-DD", "return_date": "YYYY-MM-DD" }` (Datas devem ser válidas e futuras).
+    -   Resposta: O pedido de viagem recém-criado e formatado.
+-   **`GET /api/travel-requests/{id}`**
+    -   Descrição: Consulta os detalhes de um pedido de viagem específico. Usuários 'user' só podem ver os seus.
+    -   Autenticação: Requer `Authorization: Bearer <token>`.
+    -   Parâmetro de Rota: `{id}` do pedido.
+    -   Resposta: Detalhes do pedido formatado (200), erro 403 (não autorizado) ou 404 (não encontrado).
+-   **`PATCH /api/travel-requests/{id}/status`**
+    -   Descrição: Atualiza o status de um pedido de viagem (apenas para 'approved' ou 'canceled'). **Requer permissão de 'admin'.**
+    -   Autenticação: Requer `Authorization: Bearer <token>` (de um admin).
+    -   Parâmetro de Rota: `{id}` do pedido.
+    -   Body (JSON): `{ "status": "approved" }` ou `{ "status": "canceled" }`
+    -   Resposta: O pedido atualizado e formatado (200), erro 403 (não admin), 404 (não encontrado) ou 422 (falha na regra de negócio, ex: cancelamento inválido).
+
+## Funcionalidades Implementadas
+
+-   ✅ Criação e listagem de pedidos de viagem.
+-   ✅ Consulta de pedido específico.
+-   ✅ Atualização de status (aprovação/cancelamento) por admin.
+-   ✅ Autenticação de API usando JWT (`tymon/jwt-auth`).
+-   ✅ Registro, Login, Logout, Refresh de token.
+-   ✅ Proteção de rotas com middleware JWT.
+-   ✅ Autorização baseada em Roles ('user', 'admin') para visualização e alteração de status.
+-   ✅ Filtragem de pedidos por status, período de datas e destino.
+-   ✅ Regra de negócio para cancelamento (pedido aprovado só pode ser cancelado >= 2 dias antes da partida).
+-   ✅ Notificações por E-mail (usando fila `database`) para o solicitante na aprovação/cancelamento.
+-   ✅ Validação de dados de entrada robusta usando Form Requests.
+-   ✅ Testes automatizados (PHPUnit) cobrindo autenticação, CRUD parcial, permissões, filtros, regras de negócio e notificações.
+-   ✅ Ambiente de desenvolvimento e execução Dockerizado com Docker Compose.
+
+## Decisões de Projeto
+
+-   **Framework:** Laravel 11+ pela robustez e ecossistema.
+-   **Autenticação:** JWT (via `tymon/jwt-auth`) conforme solicitado, para APIs stateless.
+-   **Banco de Dados:** MySQL 8.0, relacional padrão.
+-   **Ambiente:** Docker e Docker Compose para portabilidade e consistência. Configuração para VS Code Dev Containers (`.devcontainer/devcontainer.json`) incluída para facilitar o desenvolvimento.
+-   **Validação:** Form Requests do Laravel para centralizar e reutilizar regras de validação.
+-   **Formatação de Resposta:** API Resources (`JsonResource`) para padronizar a saída JSON da API.
+-   **Autorização:** Verificações simples baseadas em role ('admin') no Controller. Para cenários mais complexos, Policies seriam recomendadas.
+-   **Cancelamento:** Regra de >= 2 dias antes da partida implementada no Model (`canBeCanceled`), considerada uma interpretação razoável do requisito.
+-   **Notificações:** Usando o sistema nativo do Laravel, canal de Email (configurado para `log` no `.env` padrão) e processamento em fila (`database` driver) para melhor performance.
+-   **Testes:** Foco em testes de Feature (HTTP) para garantir o funcionamento dos endpoints e regras de negócio de ponta a ponta.
+
